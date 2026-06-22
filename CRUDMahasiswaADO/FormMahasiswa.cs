@@ -393,5 +393,76 @@ namespace CRUDMahasiswaADO
             }
         }
 
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                DataRow row;
+
+                if (dataGridView1.DataSource is BindingSource)
+                {
+                    row = ((DataRowView)bindingSource1[e.RowIndex]).Row;
+                }
+                else if (dataGridView1.DataSource is DataTable dt)
+                {
+                    row = dt.Rows[e.RowIndex];
+                }
+                else
+                {
+                    return;
+                }
+
+                if (dataGridView1.DataSource is BindingSource && row.Table.Columns.Count >= 7)
+                {
+                    textNIM.Text = row[0].ToString();
+                    textNama.Text = row[1].ToString();
+                    cmbJK.Text = row[2].ToString();
+
+                    if (DateTime.TryParse(row[3].ToString(), out DateTime dbDate))
+                        dptTanggalLahir.Value = dbDate;
+
+                    textAlamat.Text = row[4].ToString();
+                    textKodeProdi.Text = row[6].ToString();
+
+                    pictureBox1.ImageLocation = null; // Clear path lama
+
+                    // PERBAIKAN UTAMA: MemoryStream tidak dibungkus dengan block 'using' agar instance internal image tidak hancur saat data di-klik
+                    if (row[5] != DBNull.Value && row[5] is byte[] imgBytes && imgBytes.Length > 0)
+                    {
+                        MemoryStream ms = new MemoryStream(imgBytes);
+                        pictureBox1.Image = Image.FromStream(ms);
+                        pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                    }
+                    else
+                    {
+                        pictureBox1.Image = null;
+                    }
+                }
+                else
+                {
+                    textNIM.Text = row.Table.Columns.Contains("NIM") ? row["NIM"].ToString() : row[0].ToString();
+                    textNama.Text = row.Table.Columns.Contains("Nama") ? row["Nama"].ToString() : (row.Table.Columns.Count > 1 ? row[1].ToString() : "");
+
+                    if (row.Table.Columns.Contains("JenisKelamin"))
+                        cmbJK.Text = row["JenisKelamin"].ToString();
+                    else if (row.Table.Columns.Contains("Jenis Kelamin"))
+                        cmbJK.Text = row["Jenis Kelamin"].ToString();
+
+                    if (row.Table.Columns.Contains("Alamat"))
+                        textAlamat.Text = row["Alamat"].ToString();
+
+                    if (row.Table.Columns.Contains("Nama Prodi"))
+                        textKodeProdi.Text = row["Nama Prodi"].ToString();
+                    else if (row.Table.Columns.Contains("KodeProdi"))
+                        textKodeProdi.Text = row["KodeProdi"].ToString();
+
+                    pictureBox1.Image = null;
+                    pictureBox1.ImageLocation = null;
+                }
+
+                textNIM.Enabled = false;
+            }
+        }
+
     
 }
