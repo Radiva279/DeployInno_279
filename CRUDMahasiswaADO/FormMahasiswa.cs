@@ -366,5 +366,32 @@ namespace CRUDMahasiswaADO
             }
         }
 
+        private void btnTestInjection_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                dbLogic.testInject(textNIM.Text);
+                LoadData();
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Message.Contains("safe"))
+                {
+                    simpanLog(ex.Message);
+                    MessageBox.Show("SQL Error : Unsafe UPDATE operation not allowed", "Security Alert", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    simpanLog(ex.Message);
+                    MessageBox.Show("SQL Error : " + ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                simpanLog(ex.Message);
+                MessageBox.Show("General Error : " + ex.Message);
+            }
+        }
+
     
 }
