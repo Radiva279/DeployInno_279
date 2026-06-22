@@ -269,3 +269,23 @@ namespace CRUDMahasiswaADO
             return dtProdi;
         }
 
+        public DataTable getDataRekap(string prodi, DateTime tanggalMasuk)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_Report", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("@inProdi", SqlDbType.VarChar, 100).Value = prodi;
+                    cmd.Parameters.Add("@inTglMsuk", SqlDbType.Char, 4).Value = tanggalMasuk.Year.ToString();
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+            return dt;
+        }
+
