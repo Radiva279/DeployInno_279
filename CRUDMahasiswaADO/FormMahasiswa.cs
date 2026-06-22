@@ -464,5 +464,40 @@ namespace CRUDMahasiswaADO
             }
         }
 
-    
+        private void bindingNavigator1_RefreshItems(object sender, EventArgs e)
+        {
+        }
+
+        private void btnCari_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(textNIM.Text))
+                {
+                    DataTable dt = dbLogic.GetMhsByNIM(textNIM.Text);
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        bindingSource1.DataSource = dt;
+                        dataGridView1.DataSource = bindingSource1;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Data mahasiswa dengan NIM tersebut tidak ditemukan.", "Pencarian", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadData();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Silakan ketik NIM terlebih dahulu di kotak NIM!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    textNIM.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                simpanLog(ex.Message);
+                MessageBox.Show("Gagal melakukan pencarian: " + ex.Message);
+            }
+        }
+    }
 }
