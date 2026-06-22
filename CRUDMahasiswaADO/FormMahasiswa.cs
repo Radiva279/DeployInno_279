@@ -346,5 +346,25 @@ namespace CRUDMahasiswaADO
         private void btnLoad_Click(object sender, EventArgs e) { LoadData(); }
         private void btnRefresh_Click(object sender, EventArgs e) { LoadData(); }
 
+        private void btnResetData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                dbLogic.resetData();
+                MessageBox.Show("Data berhasil direset", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadData();
+            }
+            catch (SqlException ex)
+            {
+                simpanLog(ex.Message);
+                MessageBox.Show("SQL Error : " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                simpanLog(ex.Message);
+                MessageBox.Show("General Error : " + ex.Message);
+            }
+        }
+
     
 }
